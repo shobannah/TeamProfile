@@ -17,94 +17,151 @@ const generateHTML = ({ managerName, name, title, empId, email, phone, addTeam, 
         <div class="col" id="employee">
           <div class="card border-info mb-3" style="max-width: 18rem;">
             <h3 class="card-header">${managerName}</h3>
+            <h3 class="card-header">${name}</h3>
             <h4 class="card-header">${title}</h4>
             <div class="card-body">
               <p class="card-title">ID:${empId}</p>
               <p class="card-title">Email: ${email}</p>
               <p class="card-title">Office Number: '${phone}</p>
+              <p class="card-title">Office Number: '${github}</p>
+              <p class="card-title">Office Number: '${school}</p>
               ${addTeam}
-            </div>  
-          </div>
-          <div class="card border-info mb-3" style="max-width: 18rem;">
-            <h3 class="card-header">${name}</h3>
-            <h4 class="card-header">${title}</h4>
-            <div class="card-body">
-              <p class="card-title">ID:${empId}</p>
-              <p class="card-title">Email: ${email}</p>
-              <p class="card-title">GitHub: ${github}</p>
-              ${addTeam}
-            </div>  
-          </div>
-          <div class="card border-info mb-3" style="max-width: 18rem;">
-            <h3 class="card-header">${name}</h3>
-            <h4 class="card-header">${title}</h4>
-            <div class="card-body">
-              <p class="card-title">ID:${empId}</p>
-              <p class="card-title">Email: ${email}</p>
-              <p class="card-title">School: ${school}</p>
-              ${addTeam}
-            </div>  
-          </div>
+            </div>
+          </div>    
         </div>
       </div>
     </main>
   </body>
   </html>`;
 
-inquirer
+function addTeamMember()  {
+  inquirer
   .prompt([
     {
-      type: 'input',
-      name: 'name',
-      message: 'Enter employee name:',
-    },
+      type: 'list',
+      name: 'addTeam',
+      message: "Which team member would you like to add?",
+      choices: ['add Manager','add Engineer', 'add Intern', 'Finish']
+      },
+    ])
+    .then((addTeam => {
+
+      if (addTeam == 'add Manager' ) {
+        return addManager()
+      } else if (addTeam == 'add Engineer' ) {
+        return addEngineer()
+      }else if (addTeam == 'add Intern' ) {
+        return addIntern()
+      } else {
+        const htmlPageContent = generateHTML(addTeam);
+
+        fs.writeFile('index.html', htmlPageContent, (err) =>
+          err ? console.log(err) : console.log('Successfully created index.html!')
+        );
+      }
+    }))
+  }
+addTeamMember()
+
+function addManager() {
+  inquirer
+  .prompt([
     {
-      type: 'input',
-      name: 'title',
-      message: 'Enter employee title:',
-    },
-    {
-      type: 'input',
-      name: 'empId',
-      message: 'Enter employee emplyee ID:',
-    },
-    {
-      type: 'input',
-      name: 'email',
-      message: 'Enter employee email:',
-    },
-    {
-      type: 'input',
-      name: 'phone',
-      message: 'Enter employee office number:',
-    },
-    {
-    type: 'list',
-    name: 'addTeam',
-    message: "Choose what to do next:",
-    choices: ['add Engineer', 'add Intern', 'Finish']
-    },
-    {
-      type: 'input',
-      name: 'github',
-      message: 'Enter employee GitHub username:',
-    },
-    {
-      type: 'input',
-      name: 'school',
-      message: 'Enter employee school name:',
-    },
-    
+    type: 'input',
+    name: 'name',
+    message: 'Enter employee name:',
+  },
+  {
+    type: 'input',
+    name: 'title',
+    message: 'Enter employee title:',
+  },
+  {
+    type: 'input',
+    name: 'empId',
+    message: 'Enter employee emplyee ID:',
+  },
+  {
+    type: 'input',
+    name: 'email',
+    message: 'Enter employee email:',
+  },
+  {
+    type: 'input',
+    name: 'phone',
+    message: 'Enter employee office number:',
+  },
   ])
-
+  .then({addTeamMember})
+  }
   
-  .then((answers) => {
-    const htmlPageContent = generateHTML(answers);
 
-    fs.writeFile('index.html', htmlPageContent, (err) =>
-      err ? console.log(err) : console.log('Successfully created index.html!')
-    );
-  
-  });
+function addEngineer() {
+  inquirer
+  .prompt([
+  {
+    type: 'input',
+    name: 'name',
+    message: 'Enter employee name:',
+  },
+  {
+    type: 'input',
+    name: 'title',
+    message: 'Enter employee title:',
+  },
+  {
+    type: 'input',
+    name: 'empId',
+    message: 'Enter employee emplyee ID:',
+  },
+  {
+    type: 'input',
+    name: 'email',
+    message: 'Enter employee email:',
+  },
+  {
+    type: 'input',
+    name: 'github',
+    message: 'Enter employee GitHub username:',
+  },
+    ])
+    .then({addTeamMember}) 
+}
+
+
+
+function addIntern() {
+  inquirer
+  .prompt([
+  {
+    type: 'input',
+    name: 'name',
+    message: 'Enter employee name:',
+  },
+  {
+    type: 'input',
+    name: 'title',
+    message: 'Enter employee title:',
+  },
+  {
+    type: 'input',
+    name: 'empId',
+    message: 'Enter employee emplyee ID:',
+  },
+  {
+    type: 'input',
+    name: 'email',
+    message: 'Enter employee email:',
+  },
+  {
+    type: 'input',
+    name: 'school',
+    message: 'Enter employee school name:',
+  }
+    ])
+    .then({addTeamMember})
+}
+
+
 
   

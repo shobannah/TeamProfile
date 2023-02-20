@@ -1,39 +1,47 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
+const Manager = require('./lib/Manager')
+const Engineer = require('./lib/Engineer')
+const Intern = require('./lib/Intern')
 
-const generateHTML = ({ managerName, name, title, empId, email, phone, addTeam, github, school}) =>
-  `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
-    <title>My Team</title>
-  </head>
-  <body>
-    <header class=" fs-1 text-lg-center text-bg-secondary ">My Team</header>
-    <main class="m-lg-4">
-      <div class="row row-cols-1 row-cols-md-3 g-4">
-        <div class="col" id="employee">
-          <div class="card border-info mb-3" style="max-width: 18rem;">
-            <h3 class="card-header">${managerName}</h3>
-            <h3 class="card-header">${name}</h3>
-            <h4 class="card-header">${title}</h4>
-            <div class="card-body">
-              <p class="card-title">ID:${empId}</p>
-              <p class="card-title">Email: ${email}</p>
-              <p class="card-title">Office Number: '${phone}</p>
-              <p class="card-title">Office Number: '${github}</p>
-              <p class="card-title">Office Number: '${school}</p>
-              ${addTeam}
+
+const generateHTMLmanager = ({ name, empId, email, phone}) =>
+    `
+            <div class="col-4 m-3 card border-info mb-3" style="max-width: 20rem;">
+              <h3 class="card-header">${name}</h3>
+              <h4 class="card-header">Manager</h4>
+              <div class="card-body">
+                <p class="card-title">ID: ${empId}</p>
+                <p class="card-title">Email:</p><a href = "mailto: ${email}">${email}</a>
+                <p class="card-title">Office Number: ${phone}</p>
+              </div>
             </div>
-          </div>    
-        </div>
-      </div>
-    </main>
-  </body>
-  </html>`;
+    `
+  const generateHTMLengineer = ({ name, empId, email, github}) =>
+    `
+            <div class="col-4 m-3 card border-info mb-3" style="max-width: 20rem;">
+              <h3 class="card-header">${name}</h3>
+              <h4 class="card-header">Engineer</h4>
+              <div class="card-body">
+                <p class="card-title">ID: ${empId}</p>
+                <p class="card-title">Email:</p><a href = "mailto: ${email}">${email}</a>
+                <p class="card-title">Github Username: </p><a href="https://github.com/${github}">${github}</a>
+              </div>
+            </div>
+    `
 
+  const generateHTMLintern = ({ name, empId, email, school}) =>
+    `
+            <div class="col-4 m-3 card border-info mb-3" style="max-width: 20rem;">
+              <h3 class="card-header">${name}</h3>
+              <h4 class="card-header">Intern</h4>
+              <div class="card-body">
+                <p class="card-title">ID: ${empId}</p>
+                <p class="card-title">Email:</p><a href = "mailto: ${email}">${email}</a>
+                <p class="card-title">School Name: ${school}</p>
+              </div>
+            </div>
+    `
 function addTeamMember()  {
   inquirer
   .prompt([
@@ -41,127 +49,157 @@ function addTeamMember()  {
       type: 'list',
       name: 'addTeam',
       message: "Which team member would you like to add?",
-      choices: ['add Manager','add Engineer', 'add Intern', 'Finish']
+      choices: [
+        {
+          name: 'add Manager',
+          value: 1
+        },
+        {
+          name: 'add Engineer',
+          value: 2
+        },
+        {
+          name: 'add Intern',
+          value: 3
+        },
+        {
+          name: 'Finish',
+          value: 4
+        },
+        ]
       },
     ])
-    .then((addTeam => {
+    .then((answer => {
 
-      if (addTeam == 'add Manager' ) {
+      if (answer.addTeam === 1) {
         return addManager()
-      } else if (addTeam == 'add Engineer' ) {
+      } else if (answer.addTeam === 2 ) {
         return addEngineer()
-      }else if (addTeam == 'add Intern' ) {
+      }else if (answer.addTeam === 3) {
         return addIntern()
       } else {
-        const htmlPageContent = generateHTML(addTeam);
-
-        fs.writeFile('index.html', htmlPageContent, (err) =>
-          err ? console.log(err) : console.log('Successfully created index.html!')
-        );
+        console.log('Successfully created index.html!')
       }
     }))
   }
 addTeamMember()
 
-function addManager() {
+function addManager(answer) {
   inquirer
   .prompt([
     {
     type: 'input',
     name: 'name',
-    message: 'Enter employee name:',
-  },
-  {
-    type: 'input',
-    name: 'title',
-    message: 'Enter employee title:',
+    message: 'Enter manager name:',
   },
   {
     type: 'input',
     name: 'empId',
-    message: 'Enter employee emplyee ID:',
+    message: 'Enter manager employee ID:',
   },
   {
     type: 'input',
     name: 'email',
-    message: 'Enter employee email:',
+    message: 'Enter manager email:',
   },
   {
     type: 'input',
     name: 'phone',
-    message: 'Enter employee office number:',
+    message: 'Enter manager office number:',
   },
   ])
-  .then({addTeamMember})
-  }
-  
+  .then((answer => {
+    const newManager = new Manager(answer.name, answer.empId, answer.email, answer.phone)
 
-function addEngineer() {
+    const htmlPageContent = generateHTMLmanager(newManager);
+  
+        fs.appendFile('index.html', htmlPageContent, (err) =>
+          err ? console.log(err) : console.log('Successfully created index.html!')
+        );
+    addTeamMember() 
+    }))
+  } 
+
+
+function addEngineer(answer) {
   inquirer
   .prompt([
   {
     type: 'input',
     name: 'name',
-    message: 'Enter employee name:',
-  },
-  {
-    type: 'input',
-    name: 'title',
-    message: 'Enter employee title:',
+    message: 'Enter engineer name:',
   },
   {
     type: 'input',
     name: 'empId',
-    message: 'Enter employee emplyee ID:',
+    message: 'Enter engineer employee ID:',
   },
   {
     type: 'input',
     name: 'email',
-    message: 'Enter employee email:',
+    message: 'Enter engineer email:',
   },
   {
     type: 'input',
     name: 'github',
-    message: 'Enter employee GitHub username:',
+    message: 'Enter engineer GitHub username:',
   },
-    ])
-    .then({addTeamMember}) 
-}
+  ])
+  .then((answer => {
+    const newEngineer = new Engineer(answer.name, answer.empId, answer.email, answer.github)
+
+    const htmlPageContent = generateHTMLengineer(newEngineer);
+  
+        fs.appendFile('index.html', htmlPageContent, (err) =>
+          err ? console.log(err) : console.log('Successfully created index.html!')
+        );
+    addTeamMember() 
+    }))
+  } 
 
 
 
-function addIntern() {
+function addIntern(answer) {
   inquirer
   .prompt([
   {
     type: 'input',
     name: 'name',
-    message: 'Enter employee name:',
-  },
-  {
-    type: 'input',
-    name: 'title',
-    message: 'Enter employee title:',
+    message: 'Enter intern name:',
   },
   {
     type: 'input',
     name: 'empId',
-    message: 'Enter employee emplyee ID:',
+    message: 'Enter intern employee ID:',
   },
   {
     type: 'input',
     name: 'email',
-    message: 'Enter employee email:',
+    message: 'Enter intern email:',
   },
   {
     type: 'input',
     name: 'school',
-    message: 'Enter employee school name:',
+    message: 'Enter intern school name:',
   }
     ])
-    .then({addTeamMember})
-}
+  .then((answer => {
+    const newIntern = new Intern (answer.name, answer.empId, answer.email, answer.school)
 
+    const htmlPageContent = generateHTMLintern(newIntern);
+  
+        fs.appendFile('index.html', htmlPageContent, (err) =>
+          err ? console.log(err) : console.log('Successfully created index.html!')
+        );
+    addTeamMember() 
+    }))
+  }
 
+module.exports = addManager
+module.exports = addEngineer
+module.exports = addIntern
+module.exports = generateHTMLmanager
+module.exports = generateHTMLengineer
+module.exports = generateHTMLintern
 
   

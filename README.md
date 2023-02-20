@@ -10,7 +10,7 @@ This is a Node.js command-line application that takes in information about emplo
 
 ## Video Walkthrough
 
-<iframe src="https://drive.google.com/file/d/112uRcnrivn9XXpi77gJ-9QbgfPYtTVUy/preview" width="500" height="300"></iframe>
+[TeamProfile.webm](https://user-images.githubusercontent.com/116910257/219989991-e57e5ddf-ce06-4217-bbb7-f8d15645f328.webm)
 
 ## Link
 
